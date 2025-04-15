@@ -11,19 +11,22 @@ try:
 
     if conn.is_connected():
         print("Connected to MySQL database!")
-
-        student_id = int(input("Enter student ID to update: "))
-        new_name = input("Enter the name: ")
-        new_age = int(input("Enter the age: "))
-
-        query = """
-            UPDATE students
-            SET name = %s, age = %s
-            WHERE id = %s
-        """
-
         cursor = conn.cursor()
-        cursor.execte(query, (new_name, new_age, student_id))
+
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS students (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            age INT NOT NULL
+        )
+        """
+        cursor.execute(create_table_query)
+
+        name = input("Enter the name: ")
+        age = int(input("Enter the age: "))
+
+        query = "INSERT INTO students (name ,age) VALUES (%s, %s)"
+        cursor.execute(query, (name, age))
         conn.commit()
 
         print(f"{cursor.rowcount} row(s) uddated.")
